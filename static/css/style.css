@@ -499,3 +499,8 @@ select {
     padding: 16px 12px 40px;
   }
 }
+
+.item-link{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-decoration:none;color:inherit;} 
+.clickable{cursor:pointer;} 
+.row-actions{display:flex;gap:10px;justify-content:flex-end;} 
+.ghost-btn.danger-text{color:#fb7185;border-color:rgba(251,113,133,0.4);}
