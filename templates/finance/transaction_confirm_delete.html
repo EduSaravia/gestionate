@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel wide">
+    <div class="panel-header">
+        <h1>Eliminar movimiento</h1>
+        <a class="ghost-btn" href="{% url 'edit_transaction' txn.pk %}">Volver</a>
+    </div>
+    <p class="muted">Esta accion no se puede deshacer.</p>
+    <ul class="list">
+        <li>
+            <div>
+                <p class="item-title">{{ txn.description|default:"Movimiento" }}</p>
+                <small>{{ txn.date }} · {% if txn.category %}{{ txn.category.name }}{% else %}Sin categoria{% endif %}</small>
+            </div>
+            <span class="pill {% if txn.category %}{{ txn.category.type|lower }}{% endif %}">{% if txn.currency == "PEN" %}S/.{% else %}USD{% endif %} {{ txn.amount|floatformat:2 }}</span>
+        </li>
+    </ul>
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="pill-btn danger">Eliminar</button>
+        <a class="ghost-btn" href="{% url 'dashboard' %}">Cancelar</a>
+    </form>
+</section>
+{% endblock %}

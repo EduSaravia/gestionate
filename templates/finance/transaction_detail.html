@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel wide">
+    <div class="panel-header">
+        <div>
+            <p class="eyebrow">Movimiento</p>
+            <h1>{{ txn.description|default:"Movimiento" }}</h1>
+            <p class="muted">Fecha: {{ txn.date }} · {% if txn.category %}{{ txn.category.name }}{% else %}Sin categoria{% endif %} · {{ txn.get_payment_method_display }} · {{ txn.currency }}</p>
+        </div>
+        <div class="row-actions">
+            <a class="pill-btn" href="{% url 'edit_transaction' txn.pk %}">Editar</a>
+            <form method="post" action="{% url 'delete_transaction' txn.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="pill-btn danger">Eliminar</button>
+            </form>
+        </div>
+    </div>
+    <div class="summary-grid">
+        <div class="card accent">
+            <p class="label">Monto</p>
+            <h2>{% if txn.currency == "PEN" %}S/.{% else %}USD{% endif %} {{ txn.amount|floatformat:2 }}</h2>
+        </div>
+        <div class="card">
+            <p class="label">Tipo</p>
+            <h2>{% if txn.category %}{{ txn.category.get_type_display }}{% else %}Movimiento{% endif %}</h2>
+        </div>
+        <div class="card">
+            <p class="label">Recurrente</p>
+            <h2>{{ txn.is_recurring|yesno:"Si,No" }}</h2>
+        </div>
+    </div>
+    {% if txn.category %}
+        <p class="muted">Categoria: {{ txn.category.name }}</p>
+    {% endif %}
+</section>
+{% endblock %}
