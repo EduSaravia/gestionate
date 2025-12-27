@@ -33,6 +33,9 @@
     <div class="card">
         <p class="label">Balance</p>
         <h2>S/. {{ balance_pen|floatformat:2 }}</h2>
+        {% if balance_usd %}
+            <div class="note">USD {{ balance_usd|floatformat:2 }}</div>
+        {% endif %}
         <small>Diferencia entre ingresos y gastos (S/).</small>
     </div>
     <div class="card">

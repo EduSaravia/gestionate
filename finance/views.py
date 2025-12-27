@@ -91,6 +91,8 @@ def dashboard(request):
     flow_total = income_total + expense_total
     expense_ratio = int((expense_total / flow_total) * 100) if flow_total else 50
     income_ratio = 100 - expense_ratio
+    balance_pen = income_total_pen - expense_total_pen
+    balance_usd = income_total_usd - expense_total_usd
 
     upcoming_subs = subs.filter(next_billing_date__gte=today).order_by("next_billing_date")[:5]
     overdue_subs = subs.filter(next_billing_date__lt=today).order_by("next_billing_date")[:3]
@@ -100,6 +102,8 @@ def dashboard(request):
         "income_total": income_total,
         "expense_total": expense_total,
         "balance": income_total - expense_total,
+        "balance_pen": balance_pen,
+        "balance_usd": balance_usd,
         "income_total_pen": income_total_pen,
         "income_total_usd": income_total_usd,
         "expense_total_pen": expense_total_pen,
