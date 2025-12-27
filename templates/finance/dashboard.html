@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="hero">
+    <div>
+        <p class="eyebrow">Tu salud financiera</p>
+        <h1>Control total de gastos, ingresos y suscripciones</h1>
+        <p class="lede">Visualiza rapido el balance, planifica pagos y recibe un panel claro en cualquier dispositivo.</p>
+        <div class="hero-actions">
+            <a class="pill-btn" href="{% url 'add_transaction' %}">Registrar movimiento</a>
+            <a class="ghost-btn" href="{% url 'add_subscription' %}">Anadir suscripcion</a>
+        </div>
+    </div>
+</header>
+
+<section class="summary-grid">
+    <div class="card accent">
+        <p class="label">Ingresos</p>
+        <h2>${{ income_total|floatformat:2 }}</h2>
+        <small>Ultimos movimientos consolidados.</small>
+    </div>
+    <div class="card">
+        <p class="label">Gastos</p>
+        <h2>${{ expense_total|floatformat:2 }}</h2>
+        <small>Incluye suscripciones y gastos fijos.</small>
+    </div>
+    <div class="card">
+        <p class="label">Balance</p>
+        <h2>${{ balance|floatformat:2 }}</h2>
+        <small>Diferencia entre ingresos y gastos.</small>
+    </div>
+    <div class="card">
+        <p class="label">Gasto del mes</p>
+        <h2>${{ month_expense|floatformat:2 }}</h2>
+        <small>Desde el 1 hasta hoy.</small>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Flujo mensual</h3>
+        <p>Comparativa rapida de entradas vs salidas.</p>
+    </div>
+    <div class="progress">
+        <div class="income" style="width: {{ income_ratio }}%"></div>
+        <div class="expense" style="width: {{ expense_ratio }}%"></div>
+    </div>
+    <div class="legend">
+        <span class="dot income-dot"></span> Ingresos {{ income_ratio }}%
+        <span class="dot expense-dot"></span> Gastos {{ expense_ratio }}%
+    </div>
+</section>
+
+<section class="grid-2">
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Suscripciones proximas</h3>
+            <a href="{% url 'add_subscription' %}" class="text-link">Nueva suscripcion</a>
+        </div>
+        {% if upcoming_subs %}
+            <ul class="list">
+                {% for sub in upcoming_subs %}
+                    <li>
+                        <div>
+                            <p class="item-title">{{ sub.name }}</p>
+                            <small>{{ sub.get_billing_cycle_display }} · vence {{ sub.next_billing_date }}</small>
+                        </div>
+                        <span class="pill">${{ sub.amount|floatformat:2 }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+        <p class="muted">Sin pagos proximos.</p>
+        {% endif %}
+        {% if overdue_subs %}
+            <div class="alert">
+                <p class="label">Atrasados</p>
+                {% for sub in overdue_subs %}
+                    <div class="alert-row">
+                        <span>{{ sub.name }} · {{ sub.next_billing_date }}</span>
+                        <strong>${{ sub.amount|floatformat:2 }}</strong>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3>Ultimos movimientos</h3>
+            <a href="{% url 'add_transaction' %}" class="text-link">Agregar</a>
+        </div>
+        {% if recent_transactions %}
+            <ul class="list">
+                {% for txn in recent_transactions %}
+                    <li>
+                        <div>
+                            <p class="item-title">{{ txn.description|default:"Movimiento" }}</p>
+                            <small>
+                                {{ txn.date }}
+                                {% if txn.category %} · {{ txn.category.name }}{% endif %}
+                                · {{ txn.get_payment_method_display }} · {{ txn.currency }}
+                            </small>
+                        </div>
+                        <span class="pill {% if txn.category %}{{ txn.category.type|lower }}{% endif %}">{{ txn.amount|floatformat:2 }} {{ txn.currency }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">Registra tu primer ingreso o gasto.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Gasto mensual por categoria</h3>
+        <p>Desde el inicio del mes actual.</p>
+    </div>
+    {% if monthly_category_totals %}
+        <ul class="list">
+            {% for item in monthly_category_totals %}
+                <li>
+                    <div class="tagged">
+                        <span class="color-tag" style="background: {{ item.color }}"></span>
+                        <div>
+                            <p class="item-title">{{ item.name }}</p>
+                            <small>{{ item.currency }} · {{ item.percent }}%</small>
+                        </div>
+                    </div>
+                    <span class="pill">{{ item.total|floatformat:2 }} {{ item.currency }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">Aun no registras gastos este mes.</p>
+    {% endif %}
+</section>
+{% endblock %}

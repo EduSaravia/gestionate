@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel wide">
+    <div class="panel-header">
+        <h1>Bienvenido de nuevo</h1>
+        <p>Ingresa para ver y manejar tus finanzas.</p>
+    </div>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label>
+            <span>Usuario</span>
+            {{ form.username }}
+        </label>
+        <label>
+            <span>Contraseña</span>
+            {{ form.password }}
+        </label>
+        <div class="form-actions">
+            <button type="submit" class="pill-btn">Ingresar</button>
+            <a class="text-link" href="{% url 'register' %}">Crear cuenta nueva</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

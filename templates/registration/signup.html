@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel wide">
+    <div class="panel-header">
+        <h1>Crea tu cuenta</h1>
+        <p>Organiza ingresos, gastos y suscripciones en un solo lugar.</p>
+    </div>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <label>
+                <span>{{ field.label }}</span>
+                {{ field }}
+                {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                {% for error in field.errors %}<div class="error">{{ error }}</div>{% endfor %}
+            </label>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="pill-btn">Crear cuenta</button>
+            <a class="text-link" href="{% url 'login' %}">Ya tengo cuenta</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

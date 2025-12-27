@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel wide">
+    <div class="panel-header">
+        <div>
+            <p class="eyebrow">Categorías</p>
+            <h1>Nueva categoría</h1>
+            <p>Clasifica tus movimientos con etiquetas y colores.</p>
+        </div>
+        <a class="ghost-btn" href="{% url 'dashboard' %}">Volver</a>
+    </div>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <label>
+                <span>{{ field.label }}</span>
+                {{ field }}
+                {% for error in field.errors %}<div class="error">{{ error }}</div>{% endfor %}
+            </label>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="pill-btn">Guardar</button>
+        </div>
+    </form>
+</section>
+{% endblock %}
