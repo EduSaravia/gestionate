@@ -41,11 +41,30 @@ def dashboard(request):
     transactions = Transaction.objects.filter(user=request.user).select_related("category")
     subs = Subscription.objects.filter(user=request.user, is_active=True).select_related("category")
 
-    income_total = transactions.filter(category__type="INCOME").aggregate(total=Sum("amount"))["total"] or Decimal("0")
-    expense_total = transactions.filter(category__type="EXPENSE").aggregate(total=Sum("amount"))["total"] or Decimal("0")
+    income_totals_by_currency = {
+        row["currency"]: row["total"] or Decimal("0")
+        for row in transactions.filter(category__type="INCOME").values("currency").annotate(total=Sum("amount"))
+    }
+    expense_totals_by_currency = {
+        row["currency"]: row["total"] or Decimal("0")
+        for row in transactions.filter(category__type="EXPENSE").values("currency").annotate(total=Sum("amount"))
+    }
+
+    income_total_pen = income_totals_by_currency.get("PEN", Decimal("0"))
+    income_total_usd = income_totals_by_currency.get("USD", Decimal("0"))
+    expense_total_pen = expense_totals_by_currency.get("PEN", Decimal("0"))
+    expense_total_usd = expense_totals_by_currency.get("USD", Decimal("0"))
+
+    income_total = income_total_pen + income_total_usd
+    expense_total = expense_total_pen + expense_total_usd
 
     month_expenses_qs = transactions.filter(category__type="EXPENSE", date__gte=month_start)
-    month_expense = month_expenses_qs.aggregate(total=Sum("amount"))["total"] or Decimal("0")
+    month_expense_pen = (
+        month_expenses_qs.filter(currency="PEN").aggregate(total=Sum("amount"))["total"] or Decimal("0")
+    )
+    month_expense_usd = (
+        month_expenses_qs.filter(currency="USD").aggregate(total=Sum("amount"))["total"] or Decimal("0")
+    )
 
     totals_by_currency = {
         row["currency"]: row["total"] or Decimal("0")
@@ -81,7 +100,12 @@ def dashboard(request):
         "income_total": income_total,
         "expense_total": expense_total,
         "balance": income_total - expense_total,
-        "month_expense": month_expense,
+        "income_total_pen": income_total_pen,
+        "income_total_usd": income_total_usd,
+        "expense_total_pen": expense_total_pen,
+        "expense_total_usd": expense_total_usd,
+        "month_expense_pen": month_expense_pen,
+        "month_expense_usd": month_expense_usd,
         "expense_ratio": expense_ratio,
         "income_ratio": income_ratio,
         "monthly_category_totals": monthly_category_totals,

@@ -16,23 +16,32 @@
 <section class="summary-grid">
     <div class="card accent">
         <p class="label">Ingresos</p>
-        <h2>${{ income_total|floatformat:2 }}</h2>
+        <h2>S/. {{ income_total_pen|floatformat:2 }}</h2>
         <small>Ultimos movimientos consolidados.</small>
+        {% if income_total_usd and income_total_usd > 0 %}
+            <div class="note">Incluye USD {{ income_total_usd|floatformat:2 }}</div>
+        {% endif %}
     </div>
     <div class="card">
         <p class="label">Gastos</p>
-        <h2>${{ expense_total|floatformat:2 }}</h2>
+        <h2>S/. {{ expense_total_pen|floatformat:2 }}</h2>
         <small>Incluye suscripciones y gastos fijos.</small>
+        {% if expense_total_usd and expense_total_usd > 0 %}
+            <div class="note">Incluye USD {{ expense_total_usd|floatformat:2 }}</div>
+        {% endif %}
     </div>
     <div class="card">
         <p class="label">Balance</p>
-        <h2>${{ balance|floatformat:2 }}</h2>
-        <small>Diferencia entre ingresos y gastos.</small>
+        <h2>S/. {{ (income_total_pen - expense_total_pen)|floatformat:2 }}</h2>
+        <small>Diferencia entre ingresos y gastos (S/).</small>
     </div>
     <div class="card">
         <p class="label">Gasto del mes</p>
-        <h2>${{ month_expense|floatformat:2 }}</h2>
+        <h2>S/. {{ month_expense_pen|floatformat:2 }}</h2>
         <small>Desde el 1 hasta hoy.</small>
+        {% if month_expense_usd and month_expense_usd > 0 %}
+            <div class="note">USD {{ month_expense_usd|floatformat:2 }}</div>
+        {% endif %}
     </div>
 </section>
 
@@ -102,7 +111,9 @@
                                 · {{ txn.get_payment_method_display }} · {{ txn.currency }}
                             </small>
                         </div>
-                        <span class="pill {% if txn.category %}{{ txn.category.type|lower }}{% endif %}">{{ txn.amount|floatformat:2 }} {{ txn.currency }}</span>
+                        <span class="pill {% if txn.category %}{{ txn.category.type|lower }}{% endif %}">
+                            {% if txn.currency == "PEN" %}S/.{% else %}USD{% endif %} {{ txn.amount|floatformat:2 }}
+                        </span>
                     </li>
                 {% endfor %}
             </ul>

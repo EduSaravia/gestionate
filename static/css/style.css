@@ -163,6 +163,11 @@ button {
   margin: 0;
   font-size: 14px;
 }
+.card .note {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+}
 
 .card.accent {
   border-color: rgba(34, 211, 238, 0.4);
