@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel wide">
+    <div class="panel-header">
+        <h1>Eliminar suscripcion</h1>
+        <a class="ghost-btn" href="{% url 'dashboard' %}">Volver</a>
+    </div>
+    <p class="muted">Esta accion no se puede deshacer.</p>
+    <ul class="list">
+        <li>
+            <div>
+                <p class="item-title">{{ sub.name }}</p>
+                <small>{{ sub.get_billing_cycle_display }} · {{ sub.next_billing_date }}</small>
+            </div>
+            <span class="pill">{{ sub.amount|floatformat:2 }}</span>
+        </li>
+    </ul>
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="pill-btn danger">Eliminar</button>
+        <a class="ghost-btn" href="{% url 'dashboard' %}">Cancelar</a>
+    </form>
+</section>
+{% endblock %}
