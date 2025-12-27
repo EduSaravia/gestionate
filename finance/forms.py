@@ -15,6 +15,8 @@ class BaseStyledForm(forms.ModelForm):
 
 
 class TransactionForm(BaseStyledForm):
+    restrict_type = None  # "INCOME" or "EXPENSE" to limitar categorias
+
     class Meta:
         model = Transaction
         fields = ["amount", "currency", "payment_method", "date", "category", "description", "is_recurring"]
@@ -34,11 +36,20 @@ class TransactionForm(BaseStyledForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
+        self.restrict_type = kwargs.pop("restrict_type", None)
         super().__init__(*args, **kwargs)
         self.fields["currency"].initial = "PEN"
         self.fields["payment_method"].initial = "YAPE"
         if user:
             self.fields["category"].queryset = Category.objects.filter(user=user)
+            if self.restrict_type:
+                self.fields["category"].queryset = self.fields["category"].queryset.filter(type=self.restrict_type)
+
+    def clean_category(self):
+        category = self.cleaned_data.get("category")
+        if self.restrict_type and category and category.type != self.restrict_type:
+            raise forms.ValidationError("Categoria invalida para este tipo de movimiento.")
+        return category
 
 
 class SubscriptionForm(BaseStyledForm):

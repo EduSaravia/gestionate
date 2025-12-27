@@ -3,9 +3,15 @@
 <section class="panel wide">
     <div class="panel-header">
         <div>
-            <p class="eyebrow">Movimiento</p>
-            <h1>Registrar ingreso o gasto</h1>
-            <p>Agrega un movimiento rápido y mantenlo clasificado.</p>
+            {% if is_income %}
+                <p class="eyebrow">Ingreso</p>
+                <h1>Registrar ingreso</h1>
+                <p>Origen: empleo, freelance, propinas u otros.</p>
+            {% else %}
+                <p class="eyebrow">Movimiento</p>
+                <h1>Registrar ingreso o gasto</h1>
+                <p>Agrega un movimiento rapido y mantenlo clasificado.</p>
+            {% endif %}
         </div>
         <a class="ghost-btn" href="{% url 'dashboard' %}">Volver</a>
     </div>

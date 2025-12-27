@@ -3,10 +3,11 @@
 <header class="hero">
     <div>
         <p class="eyebrow">Tu salud financiera</p>
-        <h1>Control total de gastos, ingresos y suscripciones</h1>
-        <p class="lede">Visualiza rapido el balance, planifica pagos y recibe un panel claro en cualquier dispositivo.</p>
+        <h1>Hola {{ user.first_name|default:user.username }}, controla gastos e ingresos</h1>
+        <p class="lede">Visualiza rapido el balance en soles, planifica pagos y recibe un panel claro en cualquier dispositivo.</p>
         <div class="hero-actions">
             <a class="pill-btn" href="{% url 'add_transaction' %}">Registrar movimiento</a>
+            <a class="pill-btn ghost" href="{% url 'add_income' %}">Registrar ingreso</a>
             <a class="ghost-btn" href="{% url 'add_subscription' %}">Anadir suscripcion</a>
         </div>
     </div>
@@ -40,9 +41,9 @@
         <h3>Flujo mensual</h3>
         <p>Comparativa rapida de entradas vs salidas.</p>
     </div>
-    <div class="progress">
-        <div class="income" style="width: {{ income_ratio }}%"></div>
-        <div class="expense" style="width: {{ expense_ratio }}%"></div>
+    <div class="chart-bars">
+        <div class="bar income" style="height: {{ income_ratio }}%"><span>Ingresos</span></div>
+        <div class="bar expense" style="height: {{ expense_ratio }}%"><span>Gastos</span></div>
     </div>
     <div class="legend">
         <span class="dot income-dot"></span> Ingresos {{ income_ratio }}%

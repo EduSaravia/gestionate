@@ -32,6 +32,7 @@ class Transaction(models.Model):
     )
     PAYMENT_METHOD_CHOICES = (
         ("YAPE", "Yape"),
+        ("PLIN", "Plin"),
         ("EFECTIVO", "Efectivo"),
         ("TARJETA", "Tarjeta"),
         ("TRANSFERENCIA", "Transferencia"),

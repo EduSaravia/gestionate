@@ -18,9 +18,10 @@
             <div class="nav-links">
                 {% if user.is_authenticated %}
                     <a href="{% url 'dashboard' %}">Tablero</a>
+                    <a href="{% url 'add_income' %}">Ingreso</a>
                     <a href="{% url 'add_transaction' %}">Movimiento</a>
-                    <a href="{% url 'add_subscription' %}">Suscripción</a>
-                    <a href="{% url 'add_category' %}">Categoría</a>
+                    <a href="{% url 'add_subscription' %}">Suscripcion</a>
+                    <a href="{% url 'add_category' %}">Categoria</a>
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="ghost-btn">Salir</button>

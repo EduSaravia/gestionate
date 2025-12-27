@@ -22,6 +22,9 @@ def _ensure_default_categories(user):
     defaults = [
         {"name": "Salario", "type": "INCOME", "color": "#22c55e"},
         {"name": "Extra", "type": "INCOME", "color": "#0ea5e9"},
+        {"name": "Empleo", "type": "INCOME", "color": "#14b8a6"},
+        {"name": "Freelance", "type": "INCOME", "color": "#06b6d4"},
+        {"name": "Propinas", "type": "INCOME", "color": "#a855f7"},
         {"name": "Vivienda", "type": "EXPENSE", "color": "#f97316"},
         {"name": "Comida", "type": "EXPENSE", "color": "#f43f5e"},
         {"name": "Transporte", "type": "EXPENSE", "color": "#6366f1"},
@@ -103,6 +106,22 @@ def add_transaction(request):
     else:
         form = TransactionForm(user=request.user)
     return render(request, "finance/transaction_form.html", {"form": form})
+
+
+@login_required
+def add_income(request):
+    _ensure_default_categories(request.user)
+    if request.method == "POST":
+        form = TransactionForm(request.POST, user=request.user, restrict_type="INCOME")
+        if form.is_valid():
+            txn = form.save(commit=False)
+            txn.user = request.user
+            txn.save()
+            messages.success(request, "Ingreso guardado.")
+            return redirect("dashboard")
+    else:
+        form = TransactionForm(user=request.user, restrict_type="INCOME")
+    return render(request, "finance/transaction_form.html", {"form": form, "is_income": True})
 
 
 @login_required
